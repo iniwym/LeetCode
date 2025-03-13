@@ -30,4 +30,35 @@ public class Code0053_MaximumSubarray {
         return ans;
     }
 
+    /**
+     * 计算并返回连续子数组中的最大和sum，同时通过打印输出对应的起始(left)和结束(right)下标。
+     *
+     * @param nums 输入的整数数组，不能为空
+     * @return 最大子数组的和
+     */
+    public static int maxSubArray1(int[] nums) {
+        int left = 0, right = 0, sum = Integer.MIN_VALUE;
+        // 初始化临时变量：l表示当前子数组的起始索引，r表示当前结束索引，pre表示当前子数组的和
+        for (int l = 0, r = 0, pre = Integer.MIN_VALUE; r < nums.length; r++) {
+            // 判断前一个子数组的和是否非负：若为真则扩展当前子数组；否则重置起始位置并重新开始
+            if (pre >= 0) {
+                pre += nums[r];
+            } else {
+                pre = nums[r];
+                l = r;
+            }
+            // 比较当前子数组和是否为最大值，若更大则更新最大值及对应的左右下标
+            if (pre > sum) {
+                sum = pre;
+                left = l;
+                right = r;
+            }
+        }
+        // 输出最大子数组的起始和结束索引
+        System.out.println(left);
+        System.out.println(right);
+        return sum;
+    }
+
+
 }
