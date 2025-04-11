@@ -75,7 +75,7 @@ public class Code2999_CountTheNumberOfPowerfulIntegers {
     }
 
     public static void main(String[] args) {
-        System.out.println(numberOfPowerfulInt(15, 665544, 6, "10"));
+        System.out.println(numberOfPowerfulInt(697662853, 11109609599885L, 6, "5"));
     }
 
 }
