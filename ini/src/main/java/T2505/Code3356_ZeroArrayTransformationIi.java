@@ -47,112 +47,112 @@ public class Code3356_ZeroArrayTransformationIi {
         return -1;
     }
 
-}
-
-/**
- * 线段树数据结构，用于高效管理区间查询和更新操作
- * 主要功能是构建线段树、更新区间值和获取整个区间的最小值
- */
-class SegmentTree {
-    // 存储每个区间最小值的数组
-    private int[] min;
-    // 存储每个区间待更新值的数组，用于懒更新
-    private int[] add;
-    // 数组长度
-    private int n;
-
     /**
-     * 构造函数，初始化线段树
-     *
-     * @param arr 线段树的初始数组
+     * 线段树数据结构，用于高效管理区间查询和更新操作
+     * 主要功能是构建线段树、更新区间值和获取整个区间的最小值
      */
-    public SegmentTree(int[] arr) {
-        n = arr.length;
-        min = new int[4 * n];
-        add = new int[4 * n];
-        build(0, 0, n - 1, arr);
-    }
+    class SegmentTree {
+        // 存储每个区间最小值的数组
+        private int[] min;
+        // 存储每个区间待更新值的数组，用于懒更新
+        private int[] add;
+        // 数组长度
+        private int n;
 
-    /**
-     * 构建线段树
-     *
-     * @param node 当前节点的索引
-     * @param l    当前节点表示的区间左边界
-     * @param r    当前节点表示的区间右边界
-     * @param arr  初始数组
-     */
-    private void build(int node, int l, int r, int[] arr) {
-        if (l == r) {
-            min[node] = arr[l];
-            return;
+        /**
+         * 构造函数，初始化线段树
+         *
+         * @param arr 线段树的初始数组
+         */
+        public SegmentTree(int[] arr) {
+            n = arr.length;
+            min = new int[4 * n];
+            add = new int[4 * n];
+            build(0, 0, n - 1, arr);
         }
-        int mid = (l + r) / 2;
-        build(2 * node + 1, l, mid, arr);
-        build(2 * node + 2, mid + 1, r, arr);
-        min[node] = Math.min(min[2 * node + 1], min[2 * node + 2]);
-    }
 
-    /**
-     * 将懒更新值推送到子节点
-     *
-     * @param node 当前节点的索引
-     * @param l    当前节点表示的区间左边界
-     * @param r    当前节点表示的区间右边界
-     */
-    private void push(int node, int l, int r) {
-        if (add[node] != 0 && l < r) {
-            add[2 * node + 1] += add[node];
-            min[2 * node + 1] += add[node];
-            add[2 * node + 2] += add[node];
-            min[2 * node + 2] += add[node];
-            add[node] = 0;
+        /**
+         * 构建线段树
+         *
+         * @param node 当前节点的索引
+         * @param l    当前节点表示的区间左边界
+         * @param r    当前节点表示的区间右边界
+         * @param arr  初始数组
+         */
+        private void build(int node, int l, int r, int[] arr) {
+            if (l == r) {
+                min[node] = arr[l];
+                return;
+            }
+            int mid = (l + r) / 2;
+            build(2 * node + 1, l, mid, arr);
+            build(2 * node + 2, mid + 1, r, arr);
+            min[node] = Math.min(min[2 * node + 1], min[2 * node + 2]);
+        }
+
+        /**
+         * 将懒更新值推送到子节点
+         *
+         * @param node 当前节点的索引
+         * @param l    当前节点表示的区间左边界
+         * @param r    当前节点表示的区间右边界
+         */
+        private void push(int node, int l, int r) {
+            if (add[node] != 0 && l < r) {
+                add[2 * node + 1] += add[node];
+                min[2 * node + 1] += add[node];
+                add[2 * node + 2] += add[node];
+                min[2 * node + 2] += add[node];
+                add[node] = 0;
+            }
+        }
+
+        /**
+         * 更新指定区间的值
+         *
+         * @param node 当前节点的索引
+         * @param l    当前节点表示的区间左边界
+         * @param r    当前节点表示的区间右边界
+         * @param ul   更新区间的左边界
+         * @param ur   更新区间的右边界
+         * @param val  更新的值
+         */
+        private void updateRange(int node, int l, int r, int ul, int ur, int val) {
+            if (ur < l || ul > r) {
+                return;
+            }
+            if (ul <= l && r <= ur) {
+                min[node] += val;
+                add[node] += val;
+                return;
+            }
+            push(node, l, r);
+            int mid = (l + r) / 2;
+            updateRange(2 * node + 1, l, mid, ul, ur, val);
+            updateRange(2 * node + 2, mid + 1, r, ul, ur, val);
+            min[node] = Math.min(min[2 * node + 1], min[2 * node + 2]);
+        }
+
+        /**
+         * 更新指定区间的值
+         *
+         * @param l   更新区间的左边界
+         * @param r   更新区间的右边界
+         * @param val 更新的值
+         */
+        public void update(int l, int r, int val) {
+            updateRange(0, 0, n - 1, l, r, val);
+        }
+
+        /**
+         * 获取整个数组的最小值
+         *
+         * @return 整个数组的最小值
+         */
+        public int getMin() {
+            return min[0];
         }
     }
 
-    /**
-     * 更新指定区间的值
-     *
-     * @param node 当前节点的索引
-     * @param l    当前节点表示的区间左边界
-     * @param r    当前节点表示的区间右边界
-     * @param ul   更新区间的左边界
-     * @param ur   更新区间的右边界
-     * @param val  更新的值
-     */
-    private void updateRange(int node, int l, int r, int ul, int ur, int val) {
-        if (ur < l || ul > r) {
-            return;
-        }
-        if (ul <= l && r <= ur) {
-            min[node] += val;
-            add[node] += val;
-            return;
-        }
-        push(node, l, r);
-        int mid = (l + r) / 2;
-        updateRange(2 * node + 1, l, mid, ul, ur, val);
-        updateRange(2 * node + 2, mid + 1, r, ul, ur, val);
-        min[node] = Math.min(min[2 * node + 1], min[2 * node + 2]);
-    }
-
-    /**
-     * 更新指定区间的值
-     *
-     * @param l   更新区间的左边界
-     * @param r   更新区间的右边界
-     * @param val 更新的值
-     */
-    public void update(int l, int r, int val) {
-        updateRange(0, 0, n - 1, l, r, val);
-    }
-
-    /**
-     * 获取整个数组的最小值
-     *
-     * @return 整个数组的最小值
-     */
-    public int getMin() {
-        return min[0];
-    }
 }
 
